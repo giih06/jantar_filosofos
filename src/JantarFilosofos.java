@@ -1,65 +1,67 @@
+import java.util.concurrent.Semaphore;  // Importa a classe Semaphore do pacote java.util.concurrent.
+
 public class JantarFilosofos {
     public static void main(String[] args) {
-        int numFilosofos = 5;
-        Filosofo[] filosofos = new Filosofo[numFilosofos];
-        Semaforo[] garfos = new Semaforo[numFilosofos];
+        int numFilosofos = 5;  // Define o número de filósofos.
+        Filosofo[] filosofos = new Filosofo[numFilosofos];  // Cria um array de filósofos.
+        Semaphore[] garfos = new Semaphore[numFilosofos];  // Cria um array de semáforos para representar os garfos.
 
         for (int i = 0; i < numFilosofos; i++) {
-            garfos[i] = new Semaforo(1); // Inicializa cada garfo com disponibilidade (1)
+            garfos[i] = new Semaphore(1); // Inicializa cada garfo com disponibilidade (1).
         }
 
         for (int i = 0; i < numFilosofos; i++) {
-            filosofos[i] = new Filosofo(i, garfos[i], garfos[(i + 1) % numFilosofos]);
-            filosofos[i].start();
+            filosofos[i] = new Filosofo(i, garfos[i], garfos[(i + 1) % numFilosofos]); // Inicializa os filósofos com seus garfos correspondentes.
+            filosofos[i].start(); // Inicia as threads dos filósofos.
         }
     }
 }
 
 class Filosofo extends Thread {
-    private int id;
-    private Semaforo garfoesquerdo;
-    private Semaforo garfofireito;
+    private int id;  // Identificação do filósofo.
+    private Semaphore garfoesquerdo;  // Semáforo para o garfo esquerdo.
+    private Semaphore garfodireito;  // Semáforo para o garfo direito.
 
-    public Filosofo(int id, Semaforo garfoesquerdo, Semaforo garfofireito) {
-        this.id = id;
-        this.garfoesquerdo = garfoesquerdo;
-        this.garfofireito = garfofireito;
+    public Filosofo(int id, Semaphore garfoesquerdo, Semaphore garfodireito) {
+        this.id = id;  // Inicializa a identificação do filósofo.
+        this.garfoesquerdo = garfoesquerdo;  // Inicializa o semáforo do garfo esquerdo.
+        this.garfodireito = garfodireito;  // Inicializa o semáforo do garfo direito.
     }
 
     public void run() {
         try {
-            while (true) {
-                think();
-                pickUpgarfos();
-                eat();
-                putDowngarfos();
+            while (true) {  // Entra em um loop infinito para que o filósofo continue a agir.
+                pensar();  // Chama o método think para simular o pensamento do filósofo.
+                pegueGarfos();  // Chama o método pickUpForks para pegar os garfos e se preparar para comer.
+                comer();  // Chama o método eat para simular o ato de comer.
+                abaixarGarfos();  // Chama o método putDownForks para colocar os garfos de volta na mesa.
             }
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
+        } catch (InterruptedException e) {  // Tratamento de exceção para interrupção da thread.
+            Thread.currentThread().interrupt();  // Marca a thread como interrompida.
         }
     }
 
-    private void think() throws InterruptedException {
-        System.out.println("Filosofo " + id + " está pensando.");
-        Thread.sleep((long) (Math.random() * 1000));
+    private void pensar() throws InterruptedException {
+        System.out.println("Filosofo " + id + " está pensando.");  // Imprime mensagem indicando que o filósofo está pensando.
+        Thread.sleep((long) (Math.random() * 1000));  // Simula um período de pensamento (atraso aleatório).
     }
 
-    private void pickUpgarfos() throws InterruptedException {
-        garfoesquerdo.acquire();
-        System.out.println("Filósofo " + id + " pega o garfo esquerdo.");
-        garfofireito.acquire();
-        System.out.println("Filósofo " + id + " pega o garfo direito.");
+    private void pegueGarfos() throws InterruptedException {
+        garfoesquerdo.acquire();  // Tenta adquirir o semáforo do garfo esquerdo (bloqueia se não disponível).
+        System.out.println("Filosofo " + id + " pega o garfo esquerdo.");  // Imprime mensagem indicando que o filósofo pegou o garfo esquerdo.
+        garfodireito.acquire();  // Tenta adquirir o semáforo do garfo direito (bloqueia se não disponível).
+        System.out.println("Filosofo " + id + " pega o garfo direito.");  // Imprime mensagem indicando que o filósofo pegou o garfo direito.
     }
 
-    private void eat() throws InterruptedException {
-        System.out.println("Filósofo " + id + " is eating.");
-        Thread.sleep((long) (Math.random() * 1000));
+    private void comer() throws InterruptedException {
+        System.out.println("Filosofo " + id + " is eating.");  // Imprime mensagem indicando que o filósofo está comendo.
+        Thread.sleep((long) (Math.random() * 1000));  // Simula um período de alimentação (atraso aleatório).
     }
 
-    private void putDowngarfos() {
-        garfoesquerdo.release();
-        System.out.println("Filósofo " + id + " abaixa o garfo esquerdo.");
-        garfofireito.release();
-        System.out.println("Filósofo " + id + " abaixa o garfo direito.");
+    private void abaixarGarfos() {
+        garfoesquerdo.release();  // Libera o semáforo do garfo esquerdo.
+        System.out.println("Filosofo " + id + " abaixa o garfo esquerdo.");  // Imprime mensagem indicando que o filósofo colocou o garfo esquerdo de volta.
+        garfodireito.release();  // Libera o semáforo do garfo direito.
+        System.out.println("Filosofo " + id + " abaixa o garfo direito.");  // Imprime mensagem indicando que o filósofo colocou o garfo direito de volta.
     }
 }
