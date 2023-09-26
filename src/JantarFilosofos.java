@@ -16,7 +16,7 @@ public class JantarFilosofos {
 
         for (int i = 0; i < numFilosofos; i++) {
             filosofos[i] = new Filosofo(i, garfos[i], garfos[(i + 1) % numFilosofos]); // Inicializa os filósofos com seus garfos correspondentes.
-            filosofos[i].start(); // Inicia as threads dos filósofos.
+            filosofos[i].start(); // Inicia as threads dos filósofos.(5)
         }
     }
 }
@@ -34,7 +34,7 @@ class Filosofo extends Thread {
         this.garfodireito = garfodireito;  // Inicializa o semáforo do garfo direito.
     }
 
-    // metodo de rodar a aplicação
+    // metodo que executa a thread
     public void run() {
         try {
             while (true) {  // Entra em um loop infinito para que o filósofo continue a agir.
@@ -51,7 +51,7 @@ class Filosofo extends Thread {
     // métodos encapsulados
     private void pensar() throws InterruptedException {
         System.out.println("Filosofo " + id + " está pensando.");  // Imprime mensagem indicando que o filósofo está pensando.
-        Thread.sleep((long) (Math.random() * 1000));  // Simula um período de pensamento (atraso aleatório entre 0 e 999 milissegundos).O .sleep faz a thread atual pausar sua execução por um numero aleatorio do math.random. Esse (long) converte o Math.random() * 100 (que é um double) em um valor inteiro longo. O método Thread.sleep espera receber um argumento do tipo long, que representa a quantidade de milissegundos que a thread deve dormir
+        Thread.sleep((long) (Math.random() * 1000));  // Usa Thread.sleep para simular um período de pensamento aleatório.(long é em milissegundos)
     }
 
     private void pegueGarfos() throws InterruptedException {
