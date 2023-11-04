@@ -15,7 +15,7 @@ public class JantarFilosofos {
         }
 
         for (int i = 0; i < numFilosofos; i++) {
-            filosofos[i] = new Filosofo(i, garfos[i], garfos[(i + 1) % numFilosofos]); // Inicializa os filósofos com seus garfos correspondentes.
+            filosofos[i] = new Filosofo(i, garfos[i], garfos[(i + 1) % numFilosofos]); // Inicializa os filósofos com seus garfos correspondentes. / indice i, garfo atual e garfo a direita
             filosofos[i].start(); // Inicia as threads dos filósofos.(5)
         }
     }
@@ -55,10 +55,19 @@ class Filosofo extends Thread {
     }
 
     private void pegueGarfos() throws InterruptedException {
-        garfoesquerdo.acquire();  // Tenta adquirir a permissao do semáforo do garfo esquerdo (bloqueia se não disponível).
-        System.out.println("Filosofo " + id + " pega o garfo esquerdo.");  // Imprime mensagem indicando que o filósofo pegou o garfo esquerdo.
-        garfodireito.acquire();  // Tenta adquirir o semáforo do garfo direito (bloqueia se não disponível).
-        System.out.println("Filosofo " + id + " pega o garfo direito.");  // Imprime mensagem indicando que o filósofo pegou o garfo direito.
+        double escolha = Math.random();  // Gera um número aleatório entre 0 e 1
+
+        if (escolha < 0.5) {
+            garfoesquerdo.acquire();  // Tenta adquirir o semáforo do garfo esquerdo.
+            System.out.println("Filósofo " + id + " pega o garfo esquerdo.");  // Imprime mensagem indicando que o filósofo pegou o garfo esquerdo.
+            garfodireito.acquire();  // Tenta adquirir o semáforo do garfo direito.
+            System.out.println("Filósofo " + id + " pega o garfo direito.");  // Imprime mensagem indicando que o filósofo pegou o garfo direito.
+        } else {
+            garfodireito.acquire();  // Tenta adquirir o semáforo do garfo direito.
+            System.out.println("Filósofo " + id + " pega o garfo direito.");  // Imprime mensagem indicando que o filósofo pegou o garfo direito.
+            garfoesquerdo.acquire();  // Tenta adquirir o semáforo do garfo esquerdo.
+            System.out.println("Filósofo " + id + " pega o garfo esquerdo.");  // Imprime mensagem indicando que o filósofo pegou o garfo esquerdo.
+        }
     }
 
     private void comer() throws InterruptedException {
@@ -67,9 +76,18 @@ class Filosofo extends Thread {
     }
 
     private void abaixarGarfos() {
-        garfoesquerdo.release();  // Libera o semáforo do garfo esquerdo.
-        System.out.println("Filosofo " + id + " abaixa o garfo esquerdo.");  // Imprime mensagem indicando que o filósofo colocou o garfo esquerdo de volta.
-        garfodireito.release();  // Libera o semáforo do garfo direito.
-        System.out.println("Filosofo " + id + " abaixa o garfo direito.");  // Imprime mensagem indicando que o filósofo colocou o garfo direito de volta.
+        double escolha = Math.random();  // Gera um número aleatório entre 0 e 1
+
+        if (escolha < 0.5) {
+            garfoesquerdo.release();  // Libera o semáforo do garfo esquerdo.
+            System.out.println("Filósofo " + id + " abaixa o garfo esquerdo.");  // Imprime mensagem indicando que o filósofo colocou o garfo esquerdo de volta.
+            garfodireito.release();  // Libera o semáforo do garfo direito.
+            System.out.println("Filósofo " + id + " abaixa o garfo direito.");  // Imprime mensagem indicando que o filósofo colocou o garfo direito de volta.
+        } else {
+            garfodireito.release();  // Libera o semáforo do garfo direito.
+            System.out.println("Filósofo " + id + " abaixa o garfo direito.");  // Imprime mensagem indicando que o filósofo colocou o garfo direito de volta.
+            garfoesquerdo.release();  // Libera o semáforo do garfo esquerdo.
+            System.out.println("Filósofo " + id + " abaixa o garfo esquerdo.");  // Imprime mensagem indicando que o filósofo colocou o garfo esquerdo de volta.
+        }
     }
 }
